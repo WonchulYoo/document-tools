@@ -1,0 +1,38 @@
+include::metadata.adoc[]
+include::_document_settings.adoc[]
+
+
+// 문서 번호가 부여되는 정식 문서
+:doctype: book
+// 정식 문서에서 표지 제거
+// :notitle:
+
+// 문서 번호가 부여되지 않는 간단한 letter, notes
+// :doctype: article
+// 간단 문서에서 표지 추가
+// :title-page:
+
+// 제목 및 title-page 
+= {document-title}: {product-name}
+
+// Document information (속표지)
+include::../template/pages/document_information.adoc[]
+
+// Revision history
+include::revision_history.adoc[]
+
+// Table of contents
+toc::[]
+
+// Figure list
+include::../template/pages/figure_list.adoc[]
+
+// Table list
+include::../template/pages/table_list.adoc[]
+
+
+
+== Example Chapter 1
+
+== Example Chapter 2
+
