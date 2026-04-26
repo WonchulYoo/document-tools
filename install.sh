@@ -9,7 +9,7 @@ set -euo pipefail
 # ---------------------------------------------------------------------------
 
 PREFIX="${PREFIX:-/usr/local}"
-SHARE_DIR="${PREFIX}/share/avikus-document-template"
+SHARE_DIR="${PREFIX}/share/document-tools"
 BIN_DIR="${PREFIX}/bin"
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 

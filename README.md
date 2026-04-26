@@ -1,4 +1,4 @@
-# avikus-document-template
+# document-tools
 
 AsciiDoc-based document template for Avikus technical documents.  
 Builds PDF and HTML using a Docker-based Asciidoctor pipeline.
@@ -17,12 +17,12 @@ Builds PDF and HTML using a Docker-based Asciidoctor pipeline.
 Clone the repository, then run the installer once:
 
 ```bash
-git clone https://github.com/WonchulYoo/avikus-document-template.git
-cd avikus-document-template
+git clone https://github.com/WonchulYoo/document-tools.git
+cd document-tools
 sudo ./install.sh
 ```
 
-This copies the template assets to `/usr/local/share/avikus-document-template/`, installs a symlink for `avk-docs` in `/usr/local/bin/`, and builds the Docker image.
+This copies the template assets to `/usr/local/share/document-tools/`, installs a symlink for `avk-docs` in `/usr/local/bin/`, and builds the Docker image.
 
 **Custom prefix:**
 ```bash
