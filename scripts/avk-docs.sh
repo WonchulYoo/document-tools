@@ -5,7 +5,14 @@ set -euo pipefail
 # avk-docs — Avikus Document CLI
 # ---------------------------------------------------------------------------
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+_SOURCE="${BASH_SOURCE[0]}"
+while [[ -L "${_SOURCE}" ]]; do
+  _DIR="$(cd -P "$(dirname "${_SOURCE}")" && pwd)"
+  _SOURCE="$(readlink "${_SOURCE}")"
+  [[ "${_SOURCE}" != /* ]] && _SOURCE="${_DIR}/${_SOURCE}"
+done
+SCRIPT_DIR="$(cd -P "$(dirname "${_SOURCE}")" && pwd)"
+unset _SOURCE _DIR
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 # ── help texts ───────────────────────────────────────────────────────────────
@@ -36,22 +43,52 @@ help_init() {
 avk-docs init — Initialize a new document
 
 USAGE
-  avk-docs init <document-name>
+  avk-docs init [options] <document-name>
 
 ARGUMENTS
-  document-name     Name of the new document directory to create (in current directory)
+  document-name          Name of the new document directory to create (in current directory)
+                         If a release date is provided, the directory will be
+                         created as "<YYYY-MM-DD> <document-name>".
+
+OPTIONS
+  -y                     Skip all interactive prompts; use tag values only
+  --doctype TYPE         Document doctype: book (default) | article
+  --title-page yes|no    Include title page
+  --product-name NAME    Product name / document subtitle (default: -)
+  --document-no NO       Document number, e.g. AVK-XXX-XXXXXXX-0001 (default: -)
+  --module-name NAME     Module name (default: -)
+  --document-type TYPE   Document type string, e.g. Design Document (default: -)
+  --project-manager NAME Project manager (required)
+  --final-editor NAME    Final editor / main author (required)
+  --authors AUTHORS      Other authors, comma-separated
+  --document-version VER Document version, e.g. 1.0.0 (default: -)
+  --release-date DATE    Release date, YYYY-MM-DD
+  --doc-info yes|no      Include inner cover / document information page (default: yes)
+  --revision yes|no      Include revision history (default: yes)
+  --toc yes|no           Include table of contents (default: yes)
+  --figure-list yes|no   Include figure list (default: yes)
+  --table-list yes|no    Include table list (default: yes)
 
 DESCRIPTION
-  Copies the document template into a new <document-name>/ directory and
-  interactively prompts for:
-    - Document type (book / article)
-    - Title page inclusion
-    - Metadata (title, authors, version, date, etc.)
-    - Optional sections (inner cover, revision history, TOC, figure/table lists)
+  Copies the document template into a new document directory.
+  Any option not supplied via a flag will be collected interactively,
+  unless -y is given (in which case missing flags use their default values).
 
-EXAMPLE
-  cd ~/my-project
+  Required fields: --project-manager, --final-editor
+  Fields that default to "-" when blank: --product-name, --document-no,
+    --document-type, --document-version
+
+EXAMPLES
+  # Fully interactive
   avk-docs init my-document
+
+  # Partially tagged (skips prompted fields that are supplied)
+  avk-docs init --product-name "MyProduct" --final-editor "Jane" my-document
+
+  # Non-interactive (-y mode)
+  avk-docs init -y \\
+    --project-manager "John" --final-editor "Jane" \\
+    --document-no "AVK-001" my-document
 EOF
 }
 
@@ -145,15 +182,20 @@ EOF
 # ── command implementations ──────────────────────────────────────────────────
 
 cmd_init() {
-  case "${1:-}" in
-    -h|--help) help_init; exit 0 ;;
-  esac
+  # Scan for -h/--help anywhere in the arguments
+  for _arg in "$@"; do
+    case "${_arg}" in -h|--help) help_init; exit 0 ;; esac
+  done
+  if [[ $# -eq 0 ]]; then
+    echo "Error: missing argument <document-name>." >&2; echo; help_init; exit 1
+  fi
   bash "${SCRIPT_DIR}/init-doc.sh" "$@"
 }
 
 cmd_build_pdf() {
   case "${1:-}" in
     -h|--help) help_build_pdf; exit 0 ;;
+    "") echo "Error: missing argument <document-name>." >&2; echo; help_build_pdf; exit 1 ;;
   esac
   bash "${SCRIPT_DIR}/build-pdf.sh" "$@"
 }
@@ -161,6 +203,7 @@ cmd_build_pdf() {
 cmd_build_html() {
   case "${1:-}" in
     -h|--help) help_build_html; exit 0 ;;
+    "") echo "Error: missing argument <document-name>." >&2; echo; help_build_html; exit 1 ;;
   esac
   bash "${SCRIPT_DIR}/build-html.sh" "$@"
 }
@@ -171,13 +214,14 @@ cmd_build() {
     -h|--help|"") help_build; exit 0 ;;
     pdf)  shift; cmd_build_pdf  "$@" ;;
     html) shift; cmd_build_html "$@" ;;
-    *) echo "Error: unknown format '${sub}'. Use 'pdf' or 'html'." >&2; exit 1 ;;
+    *) echo "Error: unknown format '${sub}'. Use 'pdf' or 'html'." >&2; echo; help_build; exit 1 ;;
   esac
 }
 
 cmd_serve_html() {
   case "${1:-}" in
     -h|--help) help_serve_html; exit 0 ;;
+    "") echo "Error: missing argument <document-name>." >&2; echo; help_serve_html; exit 1 ;;
   esac
   bash "${SCRIPT_DIR}/serve-html.sh" "$@"
 }
@@ -187,7 +231,7 @@ cmd_serve() {
   case "${sub}" in
     -h|--help|"") help_serve; exit 0 ;;
     html) shift; cmd_serve_html "$@" ;;
-    *) echo "Error: unknown format '${sub}'. Use 'html'." >&2; exit 1 ;;
+    *) echo "Error: unknown format '${sub}'. Use 'html'." >&2; echo; help_serve; exit 1 ;;
   esac
 }
 
@@ -201,7 +245,8 @@ case "${CMD}" in
   serve) shift; cmd_serve "$@" ;;
   *)
     echo "Error: unknown command '${CMD}'." >&2
-    echo "Run 'avk-docs --help' for usage." >&2
+    echo
+    help_root
     exit 1
     ;;
 esac
