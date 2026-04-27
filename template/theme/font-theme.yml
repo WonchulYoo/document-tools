@@ -22,13 +22,13 @@ font:
     SUIT:
       normal: SUIT-Regular.ttf
       bold: SUIT-SemiBold.ttf
-      italic: SUIT-Light.ttf
-      bold-italic: SUIT-SemiBold.ttf
+      italic: SUIT-Oblique.ttf
+      bold-italic: SUIT-SemiBoldOblique.ttf
     FiraCode:
       normal: FiraCode-Regular.ttf
       bold: FiraCode-Bold.ttf
-      italic: FiraCode-Regular.ttf
-      bold-italic: FiraCode-Bold.ttf
+      italic: FiraCode-Oblique.ttf
+      bold-italic: FiraCode-BoldOblique.ttf
   fallbacks:
     - SUIT
 
