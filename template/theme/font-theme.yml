@@ -17,8 +17,8 @@ font:
     Inter:
       normal: Inter-VariableFont_slnt,wght.ttf
       bold: Inter-SemiBold.ttf
-      italic: Inter-VariableFont_slnt,wght.ttf
-      bold-italic: Inter-SemiBold.ttf
+      italic: Inter-Italic.ttf
+      bold-italic: Inter-SemiBoldItalic.ttf
     SUIT:
       normal: SUIT-Regular.ttf
       bold: SUIT-SemiBold.ttf
