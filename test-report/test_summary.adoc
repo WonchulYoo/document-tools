@@ -25,7 +25,7 @@
 | {test-place}
 
 | [.table-label]#Test Specification#
-a| 
+a|
 * List of Test Specification
 
 | [.table-label]#Issue Date#
@@ -47,8 +47,8 @@ a|
 
 Test Results...
 
-{empty} + 
-{empty} + 
+{empty} +
+{empty} +
 
 [.abstract-proprietary-box]
 ****

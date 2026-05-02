@@ -16,4 +16,3 @@
 :source-highlighter: highlight.js
 :rouge-style: github
 :running-content-start-at: 2
-

@@ -12,7 +12,7 @@
 // 제품 버전
 :product-version: vX.X.X
 
-// 프로젝트 관리자: 보통 팀장팀 적으시면 됩니다. 
+// 프로젝트 관리자: 보통 팀장팀 적으시면 됩니다.
 :project-manager: Gildong Hong
 
 // 문서 주 편집자 혹은 주 저자. 저자 목록 맨 첫번째에 들어갑니다.
@@ -40,9 +40,6 @@
 :issue-date: 20XX-XX-XX
 :revdate: {issue-date}
 
-// 인증을 받는 문서일 경우 approved_date 추가. 
+// 인증을 받는 문서일 경우 approved_date 추가.
 :approved-date: 20XX-XX-XX
 :approved-by: Surveyor-Name
-
-
-
