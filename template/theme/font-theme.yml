@@ -9,7 +9,7 @@ code:
   font-family: FiraCode
 
 prose:
-  text-indent: 10
+  text-indent: 0
 
 font:
   catalog:
@@ -71,4 +71,8 @@ role:
     font-color: '00A651'
   red:
     font-color: 'CC0000'
+  text-left:
+    align: left
+  text-right:
+    align: right
   

@@ -1,6 +1,8 @@
 page:
   # margin: [4cm, 1.6cm, 3.0cm, 1.6cm]
   margin: [4cm, 1.6cm, 3.0cm, 1.6cm]
+  numbering:
+    start-at: after-toc
   background-image: image:header-image.png[fill=none,pdfwidth=100%,position=top center]
 
 
@@ -14,11 +16,11 @@ header:
   vertical-align: bottom
   recto: &shared_header
     left:
-      content: '{product-name}'
+      content: '{header-left}'
       font-size: 12
       font-color: '6F6F6F'
     right:
-      content: '{document-title}'
+      content: '{header-right}'
       font-size: 12
       font-color: '659ADD'
   verso: *shared_header
@@ -67,4 +69,3 @@ footer:
       font-family: Inter
       font-size: 8.5
       align: right
-    
