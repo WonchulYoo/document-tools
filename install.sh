@@ -60,9 +60,9 @@ do_install() {
   install -m 755 "${SOURCE_DIR}/scripts/serve-html.sh" "${SHARE_DIR}/scripts/serve-html.sh"
   install -m 755 "${SOURCE_DIR}/scripts/init-doc.sh"   "${SHARE_DIR}/scripts/init-doc.sh"
 
-  # Template (fonts, theme, pages) and document-example
-  cp -r "${SOURCE_DIR}/template/."          "${SHARE_DIR}/template/"
-  cp -r "${SOURCE_DIR}/document-example/." "${SHARE_DIR}/document-example/"
+  # Template (fonts, theme, pages) and document
+  cp -r "${SOURCE_DIR}/template/."   "${SHARE_DIR}/template/"
+  cp -r "${SOURCE_DIR}/document/."   "${SHARE_DIR}/document/"
 
   # Symlink: single avk-docs entry point
   info "Creating symlink in ${BIN_DIR}..."

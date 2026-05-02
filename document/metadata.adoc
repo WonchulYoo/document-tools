@@ -3,9 +3,11 @@
 
 // 문서 이름 (문서 제목으로 들어감.)
 :document-title: Document Template
+:header-right: {document-title}
 
 // 문서 번호
 :document-number: AVK-XXX-XXXXXXX-0001
+:header-left: {document-number}
 
 // 모듈 이름. 없으면 - (hyphen)
 :module-name: doc-template

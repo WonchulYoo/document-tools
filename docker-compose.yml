@@ -22,7 +22,7 @@ services:
           -r asciidoctor-mathematical \
           -r asciidoctor-lists \
           -o "/documents/output/$${OUTPUT_FILE}.pdf" \
-          book.adoc &&
+          document.adoc &&
         echo "PDF generation completed: ./output/$${OUTPUT_FILE}.pdf"
 
   document-html:
@@ -44,5 +44,5 @@ services:
           -b html5 \
           -D /documents/output/html \
           -o index.html \
-          book.adoc &&
+          document.adoc &&
         echo "HTML generation completed: ./output/html/index.html"

@@ -64,7 +64,7 @@ The script will ask:
 - **Metadata** — product name, document title, number, type, authors, version, date
 - **Sections** — inner cover, revision history, table of contents, figure list, table list
 
-Sections that are not needed are commented out in `book.adoc`. Unused files (e.g. `revision_history.adoc`) are deleted automatically.
+Sections that are not needed are commented out in `document.adoc`. Unused files (e.g. `revision_history.adoc`) are deleted automatically.
 
 ```bash
 cd ~/Documents/my-project
@@ -128,13 +128,13 @@ avk-docs serve html my-document
 
 ---
 
-## Document Structure (`document-example`)
+## Document Structure (`document`)
 
-`document-example/` is a reference document used as the template source for `avk-docs init`.
+`document/` is a reference document used as the template source for `avk-docs init`.
 
 ```
-document-example/
-├── book.adoc                  # Main entry point — includes all sections
+document/
+├── document.adoc              # Main entry point — includes all sections
 ├── metadata.adoc              # Document metadata (title, authors, version, etc.)
 ├── _document_settings.adoc    # AsciiDoc/PDF rendering settings
 ├── revision_history.adoc      # Revision history table
@@ -144,7 +144,7 @@ document-example/
 └── output/                    # Build output (PDF, HTML)
 ```
 
-### `book.adoc`
+### `document.adoc`
 
 The main entry point that assembles the full document.
 

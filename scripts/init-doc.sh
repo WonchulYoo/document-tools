@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ---------------------------------------------------------------------------
-# init-doc: Initialize a new document from the document-example template
+# init-doc: Initialize a new document from the document template
 # Usage: init-doc [options] <document-name>
 #
 # Options:
@@ -123,7 +123,7 @@ fi
 RAW_NAME="$1"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-EXAMPLE_DIR="${PROJECT_ROOT}/document-example"
+EXAMPLE_DIR="${PROJECT_ROOT}/document"
 
 # ── helpers ──────────────────────────────────────────────────────────────────
 
@@ -481,7 +481,7 @@ else
 EOF
 fi
 
-# ── write book.adoc ──────────────────────────────────────────────────────────
+# ── write document.adoc ──────────────────────────────────────────────────────
 
 {
   echo "include::metadata.adoc[]"
@@ -546,7 +546,7 @@ fi
   echo ""
   echo "== Chapter 1"
   echo ""
-} > "${DEST}/book.adoc"
+} > "${DEST}/document.adoc"
 
 # ── cleanup ──────────────────────────────────────────────────────────────────
 
