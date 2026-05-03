@@ -51,18 +51,21 @@ ARGUMENTS
                          created as "<YYYY-MM-DD> <document-name>".
 
 OPTIONS
-  -y                     Skip all interactive prompts; use tag values only
-  --doctype TYPE         Document doctype: book (default) | article
+  -y                     Skip all interactive prompts; use template values and flags
+  --template TYPE        Template type: document (default) | letter | test-report
+  --type TYPE            Alias for --template
+  --set TAG=VALUE        Set any metadata tag from the selected metadata.adoc
+  --doctype TYPE         Override AsciiDoc doctype: book | article
   --title-page yes|no    Include title page
-  --product-name NAME    Product name / document subtitle (default: -)
-  --document-no NO       Document number, e.g. AVK-XXX-XXXXXXX-0001 (default: -)
-  --module-name NAME     Module name (default: -)
-  --document-type TYPE   Document type string, e.g. Design Document (default: -)
-  --project-manager NAME Project manager (required)
-  --final-editor NAME    Final editor / main author (required)
+  --product-name NAME    Sets info-product-name
+  --document-no NO       Sets info-document-number
+  --module-name NAME     Sets info-module-name
+  --document-type TYPE   Sets info-document-type
+  --project-manager NAME Sets info-project-manager
+  --final-editor NAME    Sets info-final-editor
   --authors AUTHORS      Other authors, comma-separated
-  --document-version VER Document version, e.g. 1.0.0 (default: -)
-  --release-date DATE    Release date, YYYY-MM-DD
+  --document-version VER Sets info-document-version
+  --release-date DATE    Sets info-issue-date
   --doc-info yes|no      Include inner cover / document information page (default: yes)
   --revision yes|no      Include revision history (default: yes)
   --toc yes|no           Include table of contents (default: yes)
@@ -70,17 +73,20 @@ OPTIONS
   --table-list yes|no    Include table list (default: yes)
 
 DESCRIPTION
-  Copies the document template into a new document directory.
-  Any option not supplied via a flag will be collected interactively,
-  unless -y is given (in which case missing flags use their default values).
+  Copies one of the bundled template directories into a new document directory.
+  The init wizard reads metadata.adoc from the selected template and asks for
+  the metadata tags defined there, using nearby comments as question text.
+  Any option not supplied via a flag will be collected interactively unless -y
+  is given, in which case template values are kept.
 
-  Required fields: --project-manager, --final-editor
-  Fields that default to "-" when blank: --product-name, --document-no,
-    --document-type, --document-version
+  Template types: document, letter, test-report
 
 EXAMPLES
   # Fully interactive
   avk-docs init my-document
+
+  # Choose a template non-interactively
+  avk-docs init -y --template test-report my-test-report
 
   # Partially tagged (skips prompted fields that are supplied)
   avk-docs init --product-name "MyProduct" --final-editor "Jane" my-document

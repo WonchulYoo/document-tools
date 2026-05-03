@@ -50,7 +50,7 @@ Run `avk-docs --help` or `avk-docs <command> --help` at any time to see usage.
 
 ### `avk-docs init`
 
-Initialize a new document interactively from the template.
+Initialize a new document interactively from one of the bundled templates.
 
 ```bash
 avk-docs init <document-name>
@@ -59,16 +59,18 @@ avk-docs init <document-name>
 Run this command from the directory where you want the document folder to be created.  
 The script will ask:
 
-- **Document type** — `book` (formal, chapter-numbered) or `article` (simple letter/notes)
-- **Title page** — whether to include a cover page
-- **Metadata** — product name, document title, number, type, authors, version, date
-- **Sections** — inner cover, revision history, table of contents, figure list, table list
+- **Document template** — `document`, `letter`, or `test-report`
+- **Metadata** — tags read from the selected template's `metadata.adoc`
+- **Sections** — inner cover, revision history, table of contents, figure list, table list for the `document` template
 
+Metadata questions are generated from comments near each attribute in `metadata.adoc`.
 Sections that are not needed are commented out in `document.adoc`. Unused files (e.g. `revision_history.adoc`) are deleted automatically.
 
 ```bash
 cd ~/Documents/my-project
 avk-docs init my-document
+avk-docs init --template letter my-letter
+avk-docs init -y --template test-report my-test-report
 ```
 
 ---
@@ -128,9 +130,19 @@ avk-docs serve html my-document
 
 ---
 
+## Init Templates
+
+`avk-docs init` can create a new directory from one of these reference templates:
+
+| Template | Description |
+|---|---|
+| `document` | Formal technical document |
+| `letter` | Simple letter or note |
+| `test-report` | Formal test report with summary and test pages |
+
 ## Document Structure (`document`)
 
-`document/` is a reference document used as the template source for `avk-docs init`.
+`document/` is the formal document reference template.
 
 ```
 document/
@@ -152,12 +164,12 @@ The main entry point that assembles the full document.
 include::metadata.adoc[]
 include::_document_settings.adoc[]
 
-:doctype: book          ← document type: book or article
+:doctype: book
 
-= {document-title}: {product-name}
+= {info-document-title}: {info-product-name}
 
 // Document information (속표지)
-include::../template/pages/document_information.adoc[]
+doc-info-page::[]
 
 // Revision history
 include::revision_history.adoc[]
@@ -166,10 +178,10 @@ include::revision_history.adoc[]
 toc::[]
 
 // Figure list
-include::../template/pages/figure_list.adoc[]
+figure-list::[]
 
 // Table list
-include::../template/pages/table_list.adoc[]
+table-list::[]
 
 == Chapter 1
 ```
@@ -189,16 +201,15 @@ Document metadata attributes. These are referenced throughout the document and i
 
 | Attribute | Description |
 |---|---|
-| `:product-name:` | Product name — appears as the document subtitle |
-| `:document-title:` | Document title — appears as the main title |
-| `:document-number:` | Document number (e.g. `AVK-NAV-0001`) |
-| `:module-name:` | Module name, or `-` if not applicable |
-| `:document-type:` | Type of document (e.g. `Design Document`, `Test Report`) |
-| `:project-manager:` | Project manager name |
-| `:final-editor:` | Primary author / final editor |
-| `:authors:` | Additional authors (comma-separated) |
-| `:document-version:` | Version string (e.g. `1.0.0`). Comment out both this and `:revnumber:` if unused |
-| `:release-date:` | Release date (`YYYY-MM-DD`). Comment out both this and `:revdate:` if unused |
+| `:info-product-name:` | Product name — appears as the document subtitle |
+| `:info-document-title:` | Document title — appears as the main title |
+| `:info-document-number:` | Document number (e.g. `AVK-NAV-0001`) |
+| `:info-module-name:` | Module name, or `-` if not applicable |
+| `:info-document-type:` | Type of document (e.g. `Design Document`, `Test Report`) |
+| `:info-project-manager:` | Project manager name |
+| `:info-final-editor:` | Primary author / final editor |
+| `:info-authors:` | Additional authors (comma-separated) |
+| `:info-document-version:` | Version string (e.g. `1.0.0`). Comment out both this and `:revnumber:` if unused |
+| `:info-issue-date:` | Release or issue date (`YYYY-MM-DD`). Comment out both this and `:revdate:` if unused |
 
-Attributes that are not applicable should be commented out (`//`), except `:authors:` which should be left as an empty value.
-
+Attributes that are not applicable should be commented out (`//`), except `:info-authors:` which should be left as an empty value.

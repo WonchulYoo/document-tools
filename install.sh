@@ -11,7 +11,15 @@ set -euo pipefail
 PREFIX="${PREFIX:-/usr/local}"
 SHARE_DIR="${PREFIX}/share/document-tools"
 BIN_DIR="${PREFIX}/bin"
-SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+_SOURCE="${BASH_SOURCE[0]}"
+while [[ -L "${_SOURCE}" ]]; do
+  _DIR="$(cd -P "$(dirname "${_SOURCE}")" && pwd)"
+  _SOURCE="$(readlink "${_SOURCE}")"
+  [[ "${_SOURCE}" != /* ]] && _SOURCE="${_DIR}/${_SOURCE}"
+done
+SOURCE_DIR="$(cd -P "$(dirname "${_SOURCE}")" && pwd)"
+unset _SOURCE _DIR
 
 # ── helpers ─────────────────────────────────────────────────────────────────
 info()    { echo "[INFO]  $*"; }
@@ -46,6 +54,10 @@ do_install() {
   check_deps
 
   info "Installing files to ${SHARE_DIR}..."
+  rm -rf "${SHARE_DIR}/template" \
+         "${SHARE_DIR}/document" \
+         "${SHARE_DIR}/letter" \
+         "${SHARE_DIR}/test-report"
   install -d "${SHARE_DIR}/scripts"
   install -d "${SHARE_DIR}/template"
 
@@ -60,9 +72,11 @@ do_install() {
   install -m 755 "${SOURCE_DIR}/scripts/serve-html.sh" "${SHARE_DIR}/scripts/serve-html.sh"
   install -m 755 "${SOURCE_DIR}/scripts/init-doc.sh"   "${SHARE_DIR}/scripts/init-doc.sh"
 
-  # Template (fonts, theme, pages) and document
+  # Template assets and init source documents
   cp -r "${SOURCE_DIR}/template/."   "${SHARE_DIR}/template/"
   cp -r "${SOURCE_DIR}/document/."   "${SHARE_DIR}/document/"
+  cp -r "${SOURCE_DIR}/letter/."     "${SHARE_DIR}/letter/"
+  cp -r "${SOURCE_DIR}/test-report/." "${SHARE_DIR}/test-report/"
 
   # Symlink: single avk-docs entry point
   info "Creating symlink in ${BIN_DIR}..."
