@@ -16,3 +16,5 @@
 :source-highlighter: highlight.js
 :rouge-style: github
 :running-content-start-at: 2
+:body-page-start-id: body-start
+:body-page-start-cover-pages: 1

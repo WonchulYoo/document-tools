@@ -6,7 +6,7 @@ include::_document_settings.adoc[]
 :doctype: book
 
 // 제목 및 title-page
-= {product-name}: {report-title}
+= {info-product-name}: {info-document-title}
 
 // Revision history
 include::test_summary.adoc[]
@@ -16,6 +16,15 @@ toc::[]
 
 
 
-== Example Chapter 1
+[[body-start]]
+include::pages/01_general_information.adoc[]
 
-== Example Chapter 2
+include::pages/02_test_set.adoc[]
+
+// 뒤에 테스트 수행 내역들을 추가
+include::pages/xx_tests.adoc[]
+
+include::pages/xx_tests.adoc[]
+
+[.text-center]
+**--- END OF TEST REPORT ---**

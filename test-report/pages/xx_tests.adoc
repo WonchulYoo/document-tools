@@ -1,0 +1,56 @@
+== Test Example
+
+[.comment]#각 시험 별로 본 페이지를 복사하고, 아래 내용들을 채워주세요.#
+
+[.comment]#시험 개요를 작성해 주세요. 필요하다면, 시험의 대표 그림도 넣어주세요.#
+
+[cols=".^1h,.^5"]
+|===
+
+| Claim
+a|
+[.comment]#본 시험에서 검정, 측정하고자 하는 바를 적어주세요.#
+
+| Prerequisites & Assertions
+a|
+[.comment]#본 시험에 앞서 수행되어야 하는 시험, 가정 사항들을 적어주세요.#
+
+| Test Environment
+a|
+[.comment]#본 시험의 시험 환경을 적어주세요.#
+
+| Test Set
+a|
+[.comment]#본 시험에서 사용하는 테스트 셋, 데이터를 적어주세요. 해당 테스트 셋은 2장 Test Set, 혹은 test spec문서에 정의되어 있어야 합니다.#
+
+| Test Method
+a|
+[.comment]#본 시험 방법을 적어주세요.#
+
+| Required Result
+a|
+[.comment]#본 시험을 통과하기 위해 필요한 조건들을 적어주세요.#
+
+| Notes
+a|
+[.comment]#기타 명시할 사항들을 적어주세요.#
+
+|===
+
+<<<
+
+=== Test Results
+
+[.comment]#본 시험 결과의 총평을 적어주세요.#
+
+[.comment]#본 시험 결과의 통계, 또는 그 결과가 정리된 표를 넣어주세요.#
+
+[.comment]#상세 데이터, raw 데이터는 따로 attachment 파일에 작성하고, 여기에서 명시해주세요.#
+
+=== Analysis
+
+[.comment]#본 시험 결과에 대한 분석을 자유롭게 적어주세요.#
+
+=== Conclusion
+
+[.comment]#본 시험 결과에 대한 결론을 **간결하게 한 줄, 또는 한 문장**으로 적어주세요.#

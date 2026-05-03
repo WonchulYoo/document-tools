@@ -1,0 +1,35 @@
+== General Information
+
+=== Equipment/Module Under Test (EUT/MUT) Description
+
+[.comment]#테스트 대상 장비, 모듈 버전 등을 적어주세요.#
+
+=== Test Environment
+
+[.comment]#테스트 환경, 시뮬레이션인 경우 시뮬레이터 이름 및 버전, 실선 환경인 경우 주변 기기 등을 기술.#
+
+=== Test Specification
+
+[.comment]#테스트 스펙 문서를 참조해주세요. IEC 62388, IEC62065 같은 표준 문서 혹은 사내 테스트 절차 문서.#
+
+[.emphasis]#This report follows the terms and abbreviations defined in the test specification documents above.#
+
+=== List of Attachments
+
+[.comment]#테스트 결과 파일(영상, 이미지 등등)의 목록을 적어주세요. 없으면 아래와 같이 없다고 적어주세요.#
+
+_(None)_
+
+=== Test Results
+
+[.comment]#Test Summary에 적었던 테스트 결과 요약을 적어주세요.#
+
+=== References
+
+[.comment]#테스트 스펙 외, 본 보고서가 참조하는 문서들을 적어주세요. i.e. CONOPS, ICD, FDS 등.#
+
+=== Remarks and Limitations
+
+[.comment]#위 사항 외, 본 보고서에서 명시되어야 할 것. 본 보고서의 제약사항 및 한계 등.#
+
+<<<

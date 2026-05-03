@@ -10,7 +10,7 @@ title-page:
     font-color: '000000'
       
   authors:
-    content: '{final-editor}, {authors}'
+    content: '{info-final-editor}, {info-authors}'
     font-size: 16
     font-color: '659ADD'
 
@@ -26,10 +26,6 @@ title-page:
 
 # 속표지 서식
 role:
-  abstract-confidential-label:
-    font-style: bold
-    font-size: 10
-    font-color: 'CC0000'
   abstract-title:
     font-style: bold
     font-size: 23
@@ -41,15 +37,4 @@ role:
     font-color: '659ADD'
     margin-top: 4
     margin-bottom: 12
-  abstract-proprietary-box:
-    margin-top: 10cm
-  abstract-proprietary-title:
-    font-family: Inter
-    font-style: bold
-    font-size: 12
-    font-color: 'CC0000'
-  abstract-proprietary-body:
-    font-family: Inter
-    font-size: 9.5
-    font-color: '333333'
   

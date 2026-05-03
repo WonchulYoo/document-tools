@@ -6,10 +6,10 @@ include::_document_settings.adoc[]
 :doctype: book
 
 // 제목 및 title-page 
-= {document-title}: {product-name}
+= {info-document-title}: {info-product-name}
 
 // Document information (속표지)
-include::../template/pages/document_information.adoc[]
+doc-info-page::[]
 
 // Revision history
 include::revision_history.adoc[]
@@ -18,13 +18,13 @@ include::revision_history.adoc[]
 toc::[]
 
 // Figure list
-include::../template/pages/figure_list.adoc[]
+figure-list::[]
 
 // Table list
-include::../template/pages/table_list.adoc[]
+table-list::[]
 
 
+[[body-start]]
 == Example Chapter 1
 
 == Example Chapter 2
-

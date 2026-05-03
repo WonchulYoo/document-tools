@@ -21,6 +21,8 @@ services:
           -r asciidoctor-diagram \
           -r asciidoctor-mathematical \
           -r asciidoctor-lists \
+          -r /template/extension/body-page-start/body_page_start \
+          -r /template/extension/document-macros/document_macros \
           -o "/documents/output/$${OUTPUT_FILE}.pdf" \
           document.adoc &&
         echo "PDF generation completed: ./output/$${OUTPUT_FILE}.pdf"

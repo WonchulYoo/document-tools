@@ -1,9 +1,7 @@
 page:
-  # margin: [4cm, 1.6cm, 3.0cm, 1.6cm]
   margin: [4cm, 1.6cm, 3.0cm, 1.6cm]
-  numbering:
-    start-at: after-toc
   background-image: image:header-image.png[fill=none,pdfwidth=100%,position=top center]
+  foreground-image: image:watermark.svg[pdfwidth=72%,position=center]
 
 
 header:
@@ -16,11 +14,11 @@ header:
   vertical-align: bottom
   recto: &shared_header
     left:
-      content: '{header-left}'
+      content: '{info-document-number}'
       font-size: 12
       font-color: '6F6F6F'
     right:
-      content: '{header-right}'
+      content: '{info-document-title}'
       font-size: 12
       font-color: '659ADD'
   verso: *shared_header
@@ -42,13 +40,13 @@ footer:
     center:
       content: |
         *Avikus Co. Ltd*  (06234) 11F, 70, Nonhyeon-ro 85-gil, Gangnam-gu, Seoul, Republic of Korea *www.avikus.ai* +
-        *[Confidential] Unauthorized distribution is strictly prohibited*
+        `[Confidential] Unauthorized distribution is strictly prohibited`
       font-family: Inter
       font-size: 7.5
       font-color: 'A5A59D'      
       align: left
     right:
-      content: '{page-number}'
+      content: '{body-page-number}'
       font-family: Inter
       font-size: 8.5
       align: left
@@ -65,7 +63,7 @@ footer:
       font-color: 'A5A59D'     
       align: right 
     left:
-      content: '{page-number}'
+      content: '{body-page-number}'
       font-family: Inter
       font-size: 8.5
       align: right

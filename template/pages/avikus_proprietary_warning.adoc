@@ -1,0 +1,9 @@
+[avikus-proprietary-warning]
+--
+AVIKUS PROPRIETARY DATA
+
+This document contains confidential proprietary information. +
+Restricted to use only by Avikus employees or other persons authorized by Avikus in writing to use it. +
+Since it contains Avikus trade secrets, you cannot view, use, copy, distribute, or disclose this material +
+without the prior written approval of Avikus.
+--

@@ -5,15 +5,15 @@ include::_document_settings.adoc[]
 :doctype: article
 
 // 제목 및 title-page
-= {letter-title}
+= {info-document-title}
 
 [.text-center]
-{letter-subtitle}
+{info-document-subtitle}
 
 [.text-right]
-**{release-date}** +
-**From: {from-personnel}** +
-**To: {To-personnel}**
+**{info-issue-date}** +
+**Authors: {info-authors}** +
+**Receiver: {info-receiver}**
 
 
 == Letter Contents...

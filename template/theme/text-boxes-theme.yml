@@ -17,3 +17,10 @@ admonition:
   border-width: 0.1
   column-rule-color: '008B8F'
   padding: [14, 18, 14, 18]
+
+avikus-proprietary-warning:
+  background-color: 'FFFFFF'
+  border-color: 'CC0000'
+  border-radius: 3
+  border-width: 0.5
+  padding: [14, 18, 14, 18]
