@@ -1,20 +1,12 @@
 // Document information
 
-// 문서 번호: Letter 고정
-:info-document-number: Letter
 // 문서 제목
 :info-document-title: Document Template
 // 문서 부제목
 :info-document-subtitle: Template for Letters
 
-// 문서 타입: Letter 고정
-:info-document-type: Letter
-
 // 문서 저자. final editor 제외하고 작성. 별도로 없어도 주석 처리하지 말 것.
 :info-authors: Inbeom Kim, Sejin Kim
-
-// 수신자. 없을 경우 주석처리.
-:info-receiver: Anduril
 
 // 문서 일자. 따로 문서 일자가 없는 경우, 모두 주석 처리 할 것.
 :info-issue-date: 20XX-XX-XX

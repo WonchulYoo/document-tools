@@ -12,8 +12,7 @@ include::_document_settings.adoc[]
 
 [.text-right]
 **{info-issue-date}** +
-**Authors: {info-authors}** +
-**Receiver: {info-receiver}**
+**{info-authors}** +
 
 
 == Letter Contents...
