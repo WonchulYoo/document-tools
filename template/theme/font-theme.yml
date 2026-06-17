@@ -7,6 +7,7 @@ codespan:
 
 code:
   font-family: FiraCode
+  font-size: 9
 
 prose:
   text-indent: 0

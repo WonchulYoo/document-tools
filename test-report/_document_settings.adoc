@@ -13,7 +13,7 @@
 :stem: latexmath
 :eqnums: all
 :xrefstyle: short
-:source-highlighter: highlight.js
+:source-highlighter: rouge
 :rouge-style: github
 :running-content-start-at: 2
 :body-page-start-id: body-start
