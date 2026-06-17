@@ -3,7 +3,7 @@ set -euo pipefail
 
 # ---------------------------------------------------------------------------
 # init-doc: Initialize a new document from one of the bundled templates
-# Usage: init-doc [options] <document-name>
+# Usage: init-doc [options] <document-title>
 #
 # Document templates:
 #   document | letter | test-report
@@ -26,13 +26,18 @@ SET_VALUES=()
 
 usage() {
   cat << 'USAGE'
-Usage: init-doc [options] <document-name>
+Usage: init-doc [options] <document-title>
+
+The output directory is created from metadata:
+  document, test-report: <document-number> <document-title>
+  letter:                <issue-date> <document-title>
 
 Options:
   -y                         Skip all interactive prompts; use template values and flags
   --template TYPE            Template type: document (default) | letter | test-report
   --type TYPE                Alias for --template
   --set TAG=VALUE            Set any metadata tag from metadata.adoc
+                             Omitted template tags are ignored
 
 Common metadata aliases:
   --product-name NAME        Sets info-product-name
@@ -44,6 +49,14 @@ Common metadata aliases:
   --authors AUTHORS          Sets info-authors
   --document-version VER     Sets info-document-version
   --release-date DATE        Sets info-issue-date
+  --eut-version VER          Sets summary-eut-version
+  --test-period PERIOD       Sets summary-test-period
+  --place-of-testing PLACE   Sets summary-place-of-testing
+  --test-specification LIST  Sets summary-f-test-specification (; separated)
+  --tested-by NAMES          Sets summary-tested-by
+  --authorised-by NAMES      Sets summary-authorised-by
+  --authorized-by NAMES      Alias for --authorised-by
+  --approved VALUE           Sets summary-approved
 
 Document-template section options:
   --doctype TYPE             Override AsciiDoc doctype: book | article
@@ -75,6 +88,14 @@ get_tag_override() {
       printf '%s' "${SET_VALUES[$i]}"
       return 0
     fi
+  done
+  return 1
+}
+
+has_tag_override() {
+  local key="$1" i
+  for i in "${!SET_KEYS[@]}"; do
+    [[ "${SET_KEYS[$i]}" == "${key}" ]] && return 0
   done
   return 1
 }
@@ -164,6 +185,41 @@ while [[ $# -gt 0 ]]; do
     --release-date)
       require_value "$1" "${2:-}"
       set_tag_override "info-issue-date" "$2"
+      shift 2
+      ;;
+    --eut-version)
+      require_value "$1" "${2:-}"
+      set_tag_override "summary-eut-version" "$2"
+      shift 2
+      ;;
+    --test-period)
+      require_value "$1" "${2:-}"
+      set_tag_override "summary-test-period" "$2"
+      shift 2
+      ;;
+    --place-of-testing)
+      require_value "$1" "${2:-}"
+      set_tag_override "summary-place-of-testing" "$2"
+      shift 2
+      ;;
+    --test-specification)
+      require_value "$1" "${2:-}"
+      set_tag_override "summary-f-test-specification" "$2"
+      shift 2
+      ;;
+    --tested-by)
+      require_value "$1" "${2:-}"
+      set_tag_override "summary-tested-by" "$2"
+      shift 2
+      ;;
+    --authorised-by|--authorized-by)
+      require_value "$1" "${2:-}"
+      set_tag_override "summary-authorised-by" "$2"
+      shift 2
+      ;;
+    --approved)
+      require_value "$1" "${2:-}"
+      set_tag_override "summary-approved" "$2"
       shift 2
       ;;
     --doc-info)
@@ -317,13 +373,167 @@ prompt_for_tag() {
 
 is_system_tag() {
   case "$1" in
-    revnumber|revdate) return 0 ;;
+    revnumber|revdate|summary-issue-date) return 0 ;;
     *) return 1 ;;
   esac
 }
 
-valid_issue_date() {
-  [[ "$1" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]
+template_key() {
+  printf '%s.%s' "${TEMPLATE_TYPE}" "$1"
+}
+
+is_required_metadata_tag() {
+  case "$(template_key "$1")" in
+    document.info-project-manager|\
+    document.info-document-number|\
+    document.info-document-type|\
+    document.info-final-editor|\
+    document.info-issue-date|\
+    letter.info-authors|\
+    letter.info-issue-date|\
+    test-report.info-product-name|\
+    test-report.info-document-number|\
+    test-report.summary-eut-version|\
+    test-report.summary-test-period|\
+    test-report.summary-place-of-testing)
+      return 0
+      ;;
+    *)
+      return 1
+      ;;
+  esac
+}
+
+metadata_default_value() {
+  case "$(template_key "$1")" in
+    document.info-module-name) printf '%s' '-' ;;
+    *) printf '%s' '' ;;
+  esac
+}
+
+should_comment_empty_metadata_tag() {
+  case "$(template_key "$1")" in
+    test-report.summary-approved) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+is_omitted_metadata_tag() {
+  case "$(template_key "$1")" in
+    letter.info-document-number|\
+    letter.info-document-type|\
+    test-report.info-document-type)
+      return 0
+      ;;
+    *)
+      return 1
+      ;;
+  esac
+}
+
+is_fixed_metadata_tag() {
+  local key="$1" comment
+  shift || true
+  case "$(template_key "${key}")" in
+    test-report.summary-equipment-under-test) return 0 ;;
+  esac
+  [[ "${TEMPLATE_TYPE}" == "letter" ]] || return 1
+  for comment in "$@"; do
+    case "${comment}" in
+      *고정*|*fixed*|*Fixed*) return 0 ;;
+    esac
+  done
+  return 1
+}
+
+display_tag_name() {
+  local key="$1"
+  key="${key#info-}"
+  key="${key#summary-f-}"
+  key="${key#summary-}"
+  case "${key}" in
+    issue-date) echo "issue-date" ;;
+    *) echo "${key}" ;;
+  esac
+}
+
+metadata_example_label() {
+  local value="$1"
+  value="${value//$'\n'/; }"
+  value="$(echo "${value}" | sed -E 's/[[:space:]]+/ /g; s/^[[:space:]]+//; s/[[:space:]]+$//')"
+  [[ -n "${value}" ]] && printf ' [example: %s]' "${value}"
+  return 0
+}
+
+metadata_default_label() {
+  local value="$1"
+  [[ -n "${value}" ]] && printf ' [default: %s]' "${value}"
+  return 0
+}
+
+format_metadata_value() {
+  local key="$1" value="$2" part result=""
+  local -a _parts
+  if [[ "${key}" == "summary-f-test-specification" && "${value}" == *";"* ]]; then
+    IFS=';' read -r -a _parts <<< "${value}"
+    for part in "${_parts[@]}"; do
+      part="$(echo "${part}" | sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//')"
+      [[ -z "${part}" ]] && continue
+      if [[ -z "${result}" ]]; then
+        result="${part}"
+      else
+        result="${result} + \\"$'\n'"${part}"
+      fi
+    done
+    printf '%s' "${result}"
+  else
+    printf '%s' "${value}"
+  fi
+}
+
+compact_metadata_value() {
+  local value="$1"
+  value="${value//$'\n'/ }"
+  value="$(echo "${value}" | sed -E 's/[[:space:]]+/ /g; s/^[[:space:]]+//; s/[[:space:]]+$//')"
+  printf '%s' "${value}"
+}
+
+capture_metadata_value() {
+  local key="$1" value="$2" commented="$3"
+  [[ "${commented}" != "true" ]] || return 0
+  value="$(compact_metadata_value "${value}")"
+  case "${key}" in
+    info-document-number) DOCUMENT_NUMBER_VALUE="${value}" ;;
+    info-document-title) DOCUMENT_TITLE_VALUE="${value}" ;;
+    info-issue-date|release-date) ISSUE_DATE_VALUE="${value}" ;;
+  esac
+}
+
+document_directory_name() {
+  local title number issue_date
+  title="$(compact_metadata_value "${DOCUMENT_TITLE_VALUE:-${RAW_NAME}}")"
+  number="$(compact_metadata_value "${DOCUMENT_NUMBER_VALUE:-}")"
+  issue_date="$(compact_metadata_value "${ISSUE_DATE_VALUE:-}")"
+
+  case "${TEMPLATE_TYPE}" in
+    document|test-report)
+      if [[ -n "${number}" ]]; then
+        printf '%s %s' "${number}" "${title}"
+      else
+        printf '%s' "${title}"
+      fi
+      ;;
+    letter)
+      if [[ -n "${issue_date}" ]]; then
+        printf '%s %s' "${issue_date}" "${title}"
+      else
+        printf '%s' "${title}"
+      fi
+      ;;
+    *)
+      printf '%s' "${title}"
+      ;;
+  esac
 }
 
 write_attr_line() {
@@ -356,8 +566,11 @@ process_metadata() {
   local tmp_file line key value original_value prefix attr_tail
   local commented new_commented new_value keep_original override_value
   local comments=() comment_text prompt default_text answer
+  local default_value example_text fixed_tag required_tag
   local i=0 j continuation_line
 
+  DOCUMENT_NUMBER_VALUE=""
+  DOCUMENT_TITLE_VALUE=""
   ISSUE_DATE_VALUE=""
   read_metadata_lines "${source_file}"
   tmp_file="$(mktemp "${dest_file}.XXXXXX")"
@@ -424,9 +637,24 @@ process_metadata() {
     new_value="${original_value}"
     new_commented="${commented}"
     keep_original=true
+    default_value="$(metadata_default_value "${key}")"
+    fixed_tag=false
+    required_tag=false
+    if is_omitted_metadata_tag "${key}"; then
+      fixed_tag=true
+    elif is_fixed_metadata_tag "${key}" "${comments[@]}"; then
+      fixed_tag=true
+    fi
+    if is_required_metadata_tag "${key}"; then
+      required_tag=true
+    fi
 
-    if override_value="$(get_tag_override "${key}")"; then
-      new_value="${override_value}"
+    if [[ "${fixed_tag}" == "true" ]]; then
+      if has_tag_override "${key}"; then
+        echo "Warning: metadata tag '${key}' is not configurable for ${TEMPLATE_TYPE} template; ignoring override." >&2
+      fi
+    elif override_value="$(get_tag_override "${key}")"; then
+      new_value="$(format_metadata_value "${key}" "${override_value}")"
       keep_original=false
       if [[ "${commented}" == "true" && -n "${new_value}" ]]; then
         new_commented="false"
@@ -437,25 +665,54 @@ process_metadata() {
       if [[ "${commented}" == "true" ]]; then
         new_commented="false"
       fi
-    elif ! "${YES_MODE}"; then
-      comment_text="$(join_comments "${comments[@]}")"
-      prompt="$(prompt_for_tag "${key}" "${comment_text}")"
-      if [[ "${original_value}" == *$'\n'* ]]; then
-        default_text=" [current multiline value, Enter to keep]"
-      elif [[ -n "${original_value}" ]]; then
-        default_text=" [${original_value}]"
-      else
-        default_text=""
+    else
+      new_value="${default_value}"
+      keep_original=false
+      if ! "${YES_MODE}"; then
+        comment_text="$(join_comments "${comments[@]}")"
+        prompt="$(prompt_for_tag "$(display_tag_name "${key}")" "${comment_text}")"
+        example_text="$(metadata_example_label "${original_value}")"
+        default_text="$(metadata_default_label "${default_value}")"
+        while true; do
+          read -r -p "${prompt}${example_text}${default_text}: " answer || true
+          if [[ -n "${answer}" ]]; then
+            new_value="$(format_metadata_value "${key}" "${answer}")"
+          else
+            new_value="${default_value}"
+          fi
+          if [[ "${required_tag}" != "true" || -n "${new_value}" ]]; then
+            break
+          fi
+          echo "  ${TEMPLATE_TYPE}.$(display_tag_name "${key}") is required."
+        done
       fi
-      read -r -p "${prompt}${default_text}: " answer || true
-      if [[ -n "${answer}" ]]; then
-        new_value="${answer}"
-        keep_original=false
-        if [[ "${commented}" == "true" ]]; then
-          new_commented="false"
-        fi
+      if [[ "${commented}" == "true" && -n "${new_value}" ]]; then
+        new_commented="false"
       fi
     fi
+
+    if [[ "${fixed_tag}" != "true" && "${required_tag}" == "true" && -z "${new_value}" ]]; then
+      echo "Error: ${TEMPLATE_TYPE}.$(display_tag_name "${key}") is required." >&2
+      echo "       Provide it interactively or with --set ${key}=VALUE." >&2
+      exit 1
+    fi
+
+    if [[ "${fixed_tag}" != "true" && "${key}" == "summary-f-test-specification" ]]; then
+      new_value="$(format_metadata_value "${key}" "${new_value}")"
+      if [[ "${commented}" == "true" && -n "${new_value}" ]]; then
+        new_commented="false"
+      fi
+    fi
+
+    if [[ "${fixed_tag}" != "true" && "${keep_original}" == "false" && -z "${new_value}" ]]; then
+      if [[ "${commented}" == "true" ]] || should_comment_empty_metadata_tag "${key}"; then
+        new_commented="true"
+      else
+        new_commented="false"
+      fi
+    fi
+
+    [[ "${fixed_tag}" == "true" ]] && keep_original=true
 
     if [[ "${keep_original}" == "true" ]]; then
       printf '%s\n' "${line}" >> "${tmp_file}"
@@ -467,19 +724,27 @@ process_metadata() {
       write_attr_line "${tmp_file}" "${new_commented}" "${key}" "${new_value}"
     fi
 
-    if [[ "${new_commented}" != "true" ]]; then
-      case "${key}" in
-        info-issue-date|release-date)
-          ISSUE_DATE_VALUE="${new_value}"
-          ;;
-      esac
-    fi
+    capture_metadata_value "${key}" "${new_value}" "${new_commented}"
 
     comments=()
     i=$((j + 1))
   done
 
   mv "${tmp_file}" "${dest_file}"
+}
+
+remove_omitted_metadata_tags() {
+  local file="$1" key
+  local tags=()
+  case "${TEMPLATE_TYPE}" in
+    letter) tags=(info-document-number info-document-type) ;;
+    test-report) tags=(info-document-type) ;;
+    *) return 0 ;;
+  esac
+
+  for key in "${tags[@]}"; do
+    perl -0pi -e "s#^//[^\\n]*\\n[[:space:]]*:${key}:[^\\n]*\\n?##mg; s#^[[:space:]]*:${key}:[^\\n]*\\n?##mg" "${file}"
+  done
 }
 
 set_doctype() {
@@ -591,12 +856,9 @@ fi
 
 PREVIEW_METADATA="$(mktemp "/tmp/avk-docs-metadata.XXXXXX")"
 process_metadata "${SOURCE_DIR}/metadata.adoc" "${PREVIEW_METADATA}"
+remove_omitted_metadata_tags "${PREVIEW_METADATA}"
 
-if valid_issue_date "${ISSUE_DATE_VALUE}"; then
-  DOCUMENT_NAME="${ISSUE_DATE_VALUE} ${RAW_NAME}"
-else
-  DOCUMENT_NAME="${RAW_NAME}"
-fi
+DOCUMENT_NAME="$(document_directory_name)"
 DEST="$(pwd)/${DOCUMENT_NAME}"
 
 if [[ -d "${DEST}" ]]; then

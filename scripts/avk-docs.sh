@@ -25,7 +25,7 @@ USAGE
   avk-docs <command> [subcommand] [options]
 
 COMMANDS
-  init  <document-name>         Initialize a new document interactively
+  init  <document-title>        Initialize a new document interactively
   build pdf <document-name> [version]
                                 Build PDF from an AsciiDoc document
   build html <document-name>    Build HTML from an AsciiDoc document
@@ -43,18 +43,20 @@ help_init() {
 avk-docs init — Initialize a new document
 
 USAGE
-  avk-docs init [options] <document-name>
+  avk-docs init [options] <document-title>
 
 ARGUMENTS
-  document-name          Name of the new document directory to create (in current directory)
-                         If a release date is provided, the directory will be
-                         created as "<YYYY-MM-DD> <document-name>".
+  document-title         Default info-document-title value.
+                         The new directory is created as:
+                           document/test-report: "<document-number> <document-title>"
+                           letter:               "<issue-date> <document-title>"
 
 OPTIONS
   -y                     Skip all interactive prompts; use template values and flags
   --template TYPE        Template type: document (default) | letter | test-report
   --type TYPE            Alias for --template
   --set TAG=VALUE        Set any metadata tag from the selected metadata.adoc
+                         Omitted template tags are ignored
   --doctype TYPE         Override AsciiDoc doctype: book | article
   --title-page yes|no    Include title page
   --product-name NAME    Sets info-product-name
@@ -66,6 +68,16 @@ OPTIONS
   --authors AUTHORS      Other authors, comma-separated
   --document-version VER Sets info-document-version
   --release-date DATE    Sets info-issue-date
+  --eut-version VER      Sets summary-eut-version
+  --test-period PERIOD   Sets summary-test-period
+  --place-of-testing PLACE
+                         Sets summary-place-of-testing
+  --test-specification LIST
+                         Sets summary-f-test-specification (; separated)
+  --tested-by NAMES      Sets summary-tested-by
+  --authorised-by NAMES  Sets summary-authorised-by
+  --authorized-by NAMES  Alias for --authorised-by
+  --approved VALUE       Sets summary-approved
   --doc-info yes|no      Include inner cover / document information page (default: yes)
   --revision yes|no      Include revision history (default: yes)
   --toc yes|no           Include table of contents (default: yes)
@@ -76,25 +88,36 @@ DESCRIPTION
   Copies one of the bundled template directories into a new document directory.
   The init wizard reads metadata.adoc from the selected template and asks for
   the metadata tags defined there, using nearby comments as question text.
+  Existing metadata values are shown as examples only; blank input writes a
+  blank value unless the field is required, has an explicit default, or is a
+  test-report summary approval field.
   Any option not supplied via a flag will be collected interactively unless -y
-  is given, in which case template values are kept.
+  is given, in which case missing required fields fail and optional fields are
+  blank unless they have explicit defaults.
 
   Template types: document, letter, test-report
 
 EXAMPLES
   # Fully interactive
-  avk-docs init my-document
+  avk-docs init "My Document"
 
-  # Choose a template non-interactively
-  avk-docs init -y --template test-report my-test-report
+  # Choose a template interactively
+  avk-docs init --template letter "Project Notice"
 
   # Partially tagged (skips prompted fields that are supplied)
-  avk-docs init --product-name "MyProduct" --final-editor "Jane" my-document
+  avk-docs init --product-name "MyProduct" --final-editor "Jane" "Design Notes"
 
-  # Non-interactive (-y mode)
+  # Non-interactive document (-y mode)
   avk-docs init -y \\
     --project-manager "John" --final-editor "Jane" \\
-    --document-no "AVK-001" my-document
+    --document-type "Design Document" --document-no "AVK-001" \\
+    --release-date "2026-05-04" "My Document"
+
+  # Non-interactive test report (-y mode)
+  avk-docs init -y --template test-report \\
+    --product-name "HiNAS" --document-no "AVK-TR-001" \\
+    --eut-version "v1.0.0" --test-period "2026-05-01 - 2026-05-03" \\
+    --place-of-testing "Lab" "My Report"
 EOF
 }
 
@@ -193,7 +216,7 @@ cmd_init() {
     case "${_arg}" in -h|--help) help_init; exit 0 ;; esac
   done
   if [[ $# -eq 0 ]]; then
-    echo "Error: missing argument <document-name>." >&2; echo; help_init; exit 1
+    echo "Error: missing argument <document-title>." >&2; echo; help_init; exit 1
   fi
   bash "${SCRIPT_DIR}/init-doc.sh" "$@"
 }

@@ -53,24 +53,35 @@ Run `avk-docs --help` or `avk-docs <command> --help` at any time to see usage.
 Initialize a new document interactively from one of the bundled templates.
 
 ```bash
-avk-docs init <document-name>
+avk-docs init <document-title>
 ```
 
 Run this command from the directory where you want the document folder to be created.  
+The created folder name is derived from the selected template's metadata:
+
+- `document`, `test-report`: `<document-number> <document-title>`
+- `letter`: `<issue-date> <document-title>`
+
 The script will ask:
 
 - **Document template** — `document`, `letter`, or `test-report`
-- **Metadata** — tags read from the selected template's `metadata.adoc`
+- **Metadata** — tags read from the selected template's `metadata.adoc`; existing values are shown as examples only
 - **Sections** — inner cover, revision history, table of contents, figure list, table list for the `document` template
 
 Metadata questions are generated from comments near each attribute in `metadata.adoc`.
+Blank input writes a blank value unless the field is required, has an explicit default such as `document.module-name` (`-`), or is `test-report.summary-approved`.
+Omitted template fields, such as `letter.document-number`, `letter.document-type`, and `test-report.document-type`, are not prompted or generated.
+`test-report.summary-equipment-under-test` is kept as the template expression `{info-product-name} {info-module-name}` and is not prompted.
 Sections that are not needed are commented out in `document.adoc`. Unused files (e.g. `revision_history.adoc`) are deleted automatically.
 
 ```bash
 cd ~/Documents/my-project
-avk-docs init my-document
-avk-docs init --template letter my-letter
-avk-docs init -y --template test-report my-test-report
+avk-docs init "My Document"
+avk-docs init --template letter "Project Notice"
+avk-docs init -y --template test-report \
+  --product-name "HiNAS" --document-no "AVK-TR-001" \
+  --eut-version "v1.0.0" --test-period "2026-05-01 - 2026-05-03" \
+  --place-of-testing "Lab" "My Report"
 ```
 
 ---
